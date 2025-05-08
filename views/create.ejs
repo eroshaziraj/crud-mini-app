@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/head') %>
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="mb-4 text-center">Create a Blog Post</h1>
+        <form action="/create" method="post" class="card p-4 shadow-sm">
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" name="name" id="name" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="surname" class="form-label">Surname</label>
+                <input type="text" name="surname" id="surname" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="body" class="form-label">Body</label>
+                <textarea name="body" id="body" rows="4" class="form-control"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Post</button>
+        </form>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/head') %>
+<body class="bg-white">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+        <div class="container">
+            <div class="container d-flex justify-content-between align-items-center">
+                <a class="navbar-brand d-flex align-items-center" href="/">
+                    <img src="/img.png" alt="ErosiDev Logo" id="img" class="me-2">
+                </a>
+                <div>
+            <div>
+                <a class="btn btn-outline-primary me-2" href="/">Home</a>
+                <a class="btn btn-primary" href="/create">Create</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <h1 class="mb-4">All Blogs</h1>
+        <% if (blogs.length> 0) { %>
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <% blogs.forEach(blog=> { %>
+                    <div class="col">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <%= blog.name %>
+                                        <%= blog.surname %>
+                                </h5>
+                                <p class="card-text">
+                                    <%= blog.body %>
+                                </p>
+                                <a href="/detail/<%= blog.id %>" class="btn btn-sm btn-outline-primary">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                    <% }) %>
+            </div>
+            <% } else { %>
+                <p>No blogs yet.</p>
+                <% } %>
+    </div>
+</body>
+
+
+</html>

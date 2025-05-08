@@ -1,0 +1,35 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1, h2, h4 {
+  color: #333;
+}
+
+.navbar-brand {
+  font-weight: bold;
+  color: #0d6efd !important;
+  width: 200px;
+}
+
+.card {
+  border-radius: 1rem;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.btn {
+  border-radius: 30px;
+}
+
+#img{
+    width: 100px;
+    height: 100px;
+}
+
+textarea.form-control {
+  resize: none;
+}
