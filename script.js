@@ -3,15 +3,14 @@ const { default: mongoose } = require("mongoose");
 const morgan = require("morgan");
 const User = require("./models/User");
 const app = express();
-const PORT = 3200;
-
+require('dotenv').config();
+const PORT = process.env.PORT;
 app.set("view engine", "ejs");
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(express.json());
-
-let mongoDbURL = "mongodb+srv://eroshaziraj9:12345678.2@db.cdoxkku.mongodb.net/?retryWrites=true&w=majority&appName=DB";
+let mongoDbURL = process.env.MONGO_URI;
 
 mongoose.connect(mongoDbURL, {
     useNewUrlParser: true,
