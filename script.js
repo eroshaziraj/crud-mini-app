@@ -1,66 +1,115 @@
 const express = require("express");
+const { default: mongoose } = require("mongoose");
 const morgan = require("morgan");
+const User = require("./models/User");
 const app = express();
 const PORT = 3200;
 
-app.set("view engine","ejs");
+app.set("view engine", "ejs");
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use(express.json());
 
-let blogs = [];
+let mongoDbURL = "mongodb+srv://eroshaziraj9:12345678.2@db.cdoxkku.mongodb.net/?retryWrites=true&w=majority&appName=DB";
 
-app.get("/",(req,res)=>{
-    res.render("index",{blogs});
+mongoose.connect(mongoDbURL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+    .then(() => console.log("Database connected successfully"))
+    .catch((err) => console.log("Database connection error:", err));
+
+app.get("/", async (req, res) => {
+    try {
+        const blogs = await User.find().sort({ createdAt: -1 });
+        res.render("index", { blogs });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Error fetching blogs");
+    }
 });
 
 app.get("/create", (req, res) => {
     res.render("create");
 });
 
-app.get("/edit/:id", (req, res) => {
-    const blog = blogs.find(b => b.id === req.params.id);
-    if (!blog) {
-        return res.status(404).send("Blog not found");
+app.get("/edit/:id", async (req, res) => {
+    try {
+        const blog = await User.findById(req.params.id);
+        if (!blog) {
+            return res.status(404).send("Blog not found");
+        }
+        res.render("edit", { blog });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Error finding blog for edit");
     }
-    res.render("edit", { blog });
 });
 
-app.get("/detail/:id", (req, res) => {
-    const blog = blogs.find(b => b.id === req.params.id);
-    console.log('Blog found:', blog);
+app.get("/detail/:id", async (req, res) => {
+    try {
+        const blog = await User.findById(req.params.id);
+        console.log('Blog found:', blog);
 
-    if (!blog) {
-        return res.status(404).send("Blog not found");
+        if (!blog) {
+            return res.status(404).send("Blog not found");
+        }
+        res.render("detail", { blog });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Error finding blog details");
     }
-    res.render("detail", { blog });
 });
 
-app.get("/delete/:id",(req,res)=>{
-    const blog = blogs.findIndex(b => b.id === req.params.id);
-    if(blog === -1){
-        return res.status(404).send("Blog not found");
+app.get("/delete/:id", async (req, res) => {
+    try {
+        // Find the blog by ID
+        const blog = await User.findById(req.params.id);
+        if (!blog) {
+            return res.status(404).send("Blog not found");
+        }
+
+        // Delete the blog
+        await User.findByIdAndDelete(req.params.id);
+        res.redirect("/");
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Error deleting blog");
     }
-    blogs.splice(blog,1);
-    res.redirect("/");
-})
+});
 
-app.post("/edit/:id",(req,res)=>{
-    const {name,surname,body} = req.body;
-    const editId = blogs.findIndex(b => b.id === req.params.id);
-    if(editId === -1)
-    { return res.status(404).send("Blog not found"); }
-    blogs[editId] = { id: req.params.id, name, surname, body };
-    res.redirect("/detail/" + req.params.id);
-})
-
-
-app.post("/create", (req, res) => {
+app.post("/edit/:id", async (req, res) => {
     const { name, surname, body } = req.body;
-    const id = Date.now().toString();
-    blogs.push({ name, surname, body, id });
-    console.log(blogs);
-    res.redirect("/");
+    try {
+        const blog = await User.findByIdAndUpdate(
+            req.params.id,
+            { name, surname, body }
+        );
+
+        if (!blog) {
+            return res.status(404).send("Blog not found");
+        }
+
+        res.redirect("/detail/" + req.params.id);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Error updating blog");
+    }
 });
 
-app.listen(PORT,console.log("hehhehe"))
+app.post("/create", async (req, res) => {
+    const { name, surname, body } = req.body;
+    try {
+        const user = new User({ name, surname, body });
+        await user.save();
+        res.redirect("/");
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Error creating blog");
+    }
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
