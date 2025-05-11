@@ -10,7 +10,6 @@ app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(express.json());
-let mongoDbURL = process.env.MONGO_URI;
 
 mongoose.connect(mongoDbURL, {
     useNewUrlParser: true,
