@@ -69,7 +69,6 @@ app.get("/delete/:id", async (req, res) => {
             return res.status(404).send("Blog not found");
         }
 
-        // Delete the blog
         await User.findByIdAndDelete(req.params.id);
         res.redirect("/");
     } catch (err) {
