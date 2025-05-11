@@ -63,7 +63,6 @@ app.get("/detail/:id", async (req, res) => {
 
 app.get("/delete/:id", async (req, res) => {
     try {
-        // Find the blog by ID
         const blog = await User.findById(req.params.id);
         if (!blog) {
             return res.status(404).send("Blog not found");
